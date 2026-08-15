@@ -326,6 +326,7 @@
     .mix::before {
       content: "";
       position: absolute; inset: 0;
+      pointer-events: none;
       border-radius: 14px;
       padding: 1px;
       background: linear-gradient(120deg, hsl(var(--violet) / 0.5), hsl(var(--magenta) / 0.5));
@@ -368,14 +369,6 @@
     }
     .mix__ext:hover { color: hsl(var(--magenta)); }
     .mix__fulllink { justify-self: start; margin-top: 0.25rem; }
-    .mix__hint {
-      font-family: var(--font-mono);
-      font-size: 0.64rem;
-      letter-spacing: 0.05em;
-      line-height: 1.7;
-      color: hsl(var(--muted));
-      margin-top: 0.85rem;
-    }
     @media (max-width: 600px) {
       .mix__ext { display: none; }
     }
@@ -574,7 +567,6 @@
           </div>
           <iframe height="166" scrolling="no" frameborder="no" allow="autoplay" loading="lazy"
             src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/users/610053429&color=%23d61f8f&inverse=true&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-          <p class="mix__hint">Player not loading on your device? Play it straight in SoundCloud below.</p>
         </div>
 
         <a class="mix__fulllink btn btn--cta reveal" href="https://soundcloud.com/xejlpaulus" target="_blank" rel="noopener"><span class="arr">▶</span> PLAY ON SOUNDCLOUD</a>
