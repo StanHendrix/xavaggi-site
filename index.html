@@ -164,6 +164,16 @@
       mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
       mix-blend-mode: luminosity;
     }
+    /* Desktop: brede banner-foto — gezicht rechts, links donker uitgefade voor tekst */
+    @media (min-width: 768px) {
+      .hero__photo {
+        background-image: url('assets/hero-desktop.png');
+        background-position: right center;
+        opacity: 0.62;
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 44%);
+        mask-image: linear-gradient(to right, transparent 0%, #000 44%);
+      }
+    }
 
     .hero__realname {
       font-family: var(--font-serif);
