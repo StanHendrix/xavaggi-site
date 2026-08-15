@@ -1,3 +1,12 @@
 .DS_Store
 node_modules/
 *.log
+
+# lokale tooling / backups (niet publiceren)
+.claude/
+index-neon.html
+
+# alleen de daadwerkelijk gebruikte hero-afbeeldingen publiceren
+assets/*
+!assets/hero-desktop.png
+!assets/hero-mobile.png

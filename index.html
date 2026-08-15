@@ -1,807 +1,670 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XAVAGGI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0710">
+  <title>XAVAGGI / DJ</title>
+  <meta name="description" content="XAVAGGI, DJ from the south of the Netherlands. Trance, house, techno & phonk. Mixes, bookings and contact.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            bg:        '#07060a',
-            primary:   '#8b5cf6',
-            secondary: '#ff2d7b',
-            tertiary:  '#ff6a00',
-            muted:     '#d4d0e0',
-            surface:   '#12101a',
-          },
-          fontFamily: {
-            display: ['Outfit', 'sans-serif'],
-            mono:    ['IBM Plex Mono', 'monospace'],
-          },
-        },
-      },
-    };
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Fraunces:ital,opsz,wght@1,9..144,300;1,9..144,400;1,9..144,500&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
+    /* ════════════════════════════════════════════════════════════
+       XAVAGGI v2. Dark / techy / neon. Violet + magenta.
+       Inspired by the portfolio DNA, its own DJ identity.
+       Mobile-first, single file, no build tools.
+       ════════════════════════════════════════════════════════════ */
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { scroll-behavior: smooth; }
+    :root {
+      --bg:        271 30% 5%;    /* deep violet-black */
+      --fg:        270 12% 92%;
+      --muted:     270 8% 60%;
+      --card:      271 24% 8%;
+      --line:      271 18% 16%;
+      --violet:    268 84% 62%;   /* #8b5cf6-ish */
+      --magenta:   322 88% 58%;   /* hot magenta   */
+
+      --font-display: 'Space Grotesk', system-ui, sans-serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+      --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+      --font-serif:   'Fraunces', Georgia, serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
 
     body {
-      background-color: #07060a;
-      color: #d4d0e0;
-      font-family: 'IBM Plex Mono', monospace;
+      background: hsl(var(--bg));
+      color: hsl(var(--fg));
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
-    /* ── Grain overlay ── */
-    #grain {
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: hsl(var(--magenta)); color: #fff; }
+
+    /* ── Aurora mesh background (whole page) ── */
+    .aurora {
+      position: fixed;
+      inset: -20%;
+      z-index: -2;
+      pointer-events: none;
+      background:
+        radial-gradient(38% 44% at 18% 22%, hsl(var(--violet) / 0.30), transparent 70%),
+        radial-gradient(34% 40% at 82% 30%, hsl(var(--magenta) / 0.22), transparent 70%),
+        radial-gradient(46% 50% at 65% 88%, hsl(var(--violet) / 0.18), transparent 72%);
+      filter: blur(20px);
+      animation: drift 26s ease-in-out infinite alternate;
+    }
+    @keyframes drift {
+      0%   { transform: translate3d(0,0,0) scale(1);      }
+      50%  { transform: translate3d(2%, -2%, 0) scale(1.08); }
+      100% { transform: translate3d(-2%, 2%, 0) scale(1.04); }
+    }
+
+    /* ── Fine grid overlay ── */
+    .grid-overlay {
       position: fixed;
       inset: 0;
+      z-index: -1;
       pointer-events: none;
-      z-index: 200;
-      opacity: 0.055;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      background-size: 180px 180px;
-      mix-blend-mode: overlay;
+      opacity: 0.4;
+      background-image:
+        linear-gradient(hsl(var(--fg) / 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, hsl(var(--fg) / 0.035) 1px, transparent 1px);
+      background-size: 64px 64px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 20%, transparent 100%);
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 20%, transparent 100%);
     }
 
-    /* ── Scroll-reveal ── */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.75s cubic-bezier(.22,1,.36,1),
-                  transform 0.75s cubic-bezier(.22,1,.36,1);
-    }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
-    .d1 { transition-delay: 0.08s; }
-    .d2 { transition-delay: 0.16s; }
-    .d3 { transition-delay: 0.24s; }
-    .d4 { transition-delay: 0.32s; }
-
-    /* ── Hero animations ── */
-    @keyframes mist-pulse {
-      0%, 100% { opacity: .45; transform: translate(-50%,-50%) scale(1);   }
-      50%       { opacity: .85; transform: translate(-50%,-50%) scale(1.06); }
-    }
-    @keyframes mist-pulse-b {
-      0%, 100% { opacity: .3;  transform: scale(1);   }
-      50%       { opacity: .6;  transform: scale(1.08); }
-    }
-    @keyframes title-glow {
-      0%, 100% { text-shadow: 0 0 50px rgba(139,92,246,.35), 0 0 110px rgba(139,92,246,.1); }
-      50%       { text-shadow: 0 0 80px rgba(139,92,246,.65), 0 0 160px rgba(255,45,123,.18); }
-    }
-    @keyframes scroll-bob {
-      0%, 100% { transform: translateX(-50%) translateY(0);  }
-      50%       { transform: translateX(-50%) translateY(8px); }
-    }
-    @keyframes dot-pulse {
-      0%, 100% { opacity:.5; transform:scale(1);    }
-      50%       { opacity:1;  transform:scale(1.3);  }
-    }
-
-    .mist-a {
-      position: absolute;
-      border-radius: 50%;
-      animation: mist-pulse 5s ease-in-out infinite;
-    }
-    .mist-b {
-      position: absolute;
-      border-radius: 50%;
-      animation: mist-pulse-b 7s ease-in-out infinite;
-    }
-    .title-glow { animation: title-glow 5s ease-in-out infinite; }
-    .scroll-bob {
-      position: absolute;
-      left: 50%;
-      bottom: 2rem;
-      transform: translateX(-50%);
-      animation: scroll-bob 2s ease-in-out infinite;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: .5rem;
-    }
-    .scroll-dot { animation: dot-pulse 2s ease-in-out infinite; }
-
-    /* ── Now playing pill ── */
-    #now-playing {
+    /* ── Grain ── */
+    .grain {
       position: fixed;
-      bottom: 20px; right: 20px;
-      z-index: 300;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px 8px 14px;
-      background: #12101a;
-      border: 1px solid rgba(139,92,246,.3);
-      border-radius: 9999px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      text-decoration: none;
-      white-space: nowrap;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity .5s ease, transform .5s ease, background .2s, border-color .2s;
-      cursor: pointer;
+      inset: 0;
+      z-index: 9998;
+      pointer-events: none;
+      opacity: 0.05;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
     }
-    #now-playing.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    #now-playing:hover {
-      background: #1a1a24;
-      border-color: rgba(139,92,246,.7);
-    }
-    .np-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #8b5cf6;
-      flex-shrink: 0;
-      animation: np-pulse 2s ease-in-out infinite;
-    }
-    @keyframes np-pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(139,92,246,.6); opacity: 1; }
-      60%       { box-shadow: 0 0 0 4px rgba(139,92,246,0); opacity: .7; }
-    }
-    .np-label { color: #555; letter-spacing: .1em; }
-    .np-title { color: #d4d0e0; letter-spacing: .04em; }
-    .np-close {
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      border: none;
-      background: transparent;
-      color: #555;
-      font-size: 13px;
-      line-height: 1;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      padding: 0;
-      margin-left: 2px;
-      transition: color .2s;
-      font-family: inherit;
-    }
-    .np-close:hover { color: #d4d0e0; }
 
-    /* ── Nav ── */
-    nav {
+    /* ════════════════════ NAV ════════════════════ */
+    .nav {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      padding: 1.25rem 2rem;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      transition: background .3s, backdrop-filter .3s;
-    }
-    nav.scrolled {
-      background: rgba(7,6,10,.92);
+      justify-content: space-between;
+      padding: 1.1rem 1.5rem;
       backdrop-filter: blur(12px);
+      background: hsl(var(--bg) / 0.55);
+      border-bottom: 1px solid hsl(var(--line) / 0.6);
     }
-    .nav-link {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: .7rem;
-      letter-spacing: .25em;
-      text-transform: uppercase;
-      color: rgba(212,208,224,.55);
-      text-decoration: none;
+    .nav__brand {
+      font-family: 'Pinyon Script', cursive;
+      font-weight: 400;
+      font-size: 2.2rem;
+      line-height: 1;
+      letter-spacing: 0.01em;
+      color: hsl(var(--fg));
+      transition: opacity 200ms ease;
+    }
+    .nav__brand:hover { opacity: 0.8; }
+    .nav__links {
+      display: none;
+      gap: 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      color: hsl(var(--muted));
+    }
+    .nav__links a { transition: color 200ms ease; }
+    .nav__links a:hover { color: hsl(var(--fg)); }
+    @media (min-width: 720px) { .nav__links { display: flex; } }
+
+    /* ════════════════════ HERO ════════════════════ */
+    .hero {
       position: relative;
-      transition: color .2s;
-    }
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -3px; left: 0;
-      width: 0; height: 1px;
-      background: #8b5cf6;
-      transition: width .3s;
-    }
-    .nav-link:hover { color: #8b5cf6; }
-    .nav-link:hover::after { width: 100%; }
-
-    /* ── Section header ── */
-    .sec-num { color: #8b5cf6; opacity: .45; font-size: .7rem; letter-spacing: .2em; }
-    .sec-rule { width: 36px; height: 1px; background: #8b5cf6; flex-shrink: 0; }
-    .sec-title {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 900;
-      font-size: clamp(2rem,5vw,3.5rem);
-      color: #d4d0e0;
-      letter-spacing: -.02em;
-    }
-
-    /* ── Genre pills ── */
-    .pill {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: .65rem;
-      letter-spacing: .18em;
-      padding: .4rem 1rem;
-      border-radius: 9999px;
-      border: 1px solid rgba(139,92,246,.3);
-      background: rgba(139,92,246,.07);
-      color: #d4d0e0;
-      transition: border-color .2s, background .2s;
-    }
-    .pill:hover {
-      border-color: rgba(139,92,246,.7);
-      background: rgba(139,92,246,.14);
-    }
-
-    /* ── Mix cards ── */
-    .mix-card {
-      background: #12101a;
-      border: 1px solid rgba(139,92,246,.1);
-      border-radius: 2px;
-      overflow: hidden;
-      transition: border-color .3s, box-shadow .3s;
-    }
-    .mix-card:hover {
-      border-color: rgba(139,92,246,.55);
-      box-shadow: 0 0 32px rgba(139,92,246,.12), 0 0 64px rgba(139,92,246,.05);
-    }
-    .mix-card-header {
+      min-height: 100svh;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: .9rem 1.25rem;
-      border-bottom: 1px solid rgba(139,92,246,.08);
-    }
-    .mix-card iframe {
-      display: block;
-      width: 100%;
-    }
-
-    /* ── Social icons ── */
-    .social-link {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: .75rem;
-      letter-spacing: .2em;
-      color: rgba(212,208,224,.5);
-      text-decoration: none;
-      transition: color .2s, filter .2s;
-    }
-    .social-link:hover {
-      color: #8b5cf6;
-      filter: drop-shadow(0 0 8px rgba(139,92,246,.5));
-    }
-
-    /* ── Booking link ── */
-    .booking-link {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 900;
-      font-size: clamp(1.25rem,3vw,2.25rem);
-      color: #d4d0e0;
-      text-decoration: none;
-      word-break: break-all;
-      transition: color .3s, text-shadow .3s;
-    }
-    .booking-link:hover {
-      color: #8b5cf6;
-      text-shadow: 0 0 24px rgba(139,92,246,.45);
-    }
-
-    /* ── CTA button ── */
-    .hero-cta {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: .7rem;
-      letter-spacing: .25em;
-      text-transform: uppercase;
-      border: 1px solid rgba(139,92,246,.35);
-      color: #8b5cf6;
-      padding: .75rem 2rem;
-      text-decoration: none;
-      transition: background .3s, box-shadow .3s;
-    }
-    .hero-cta:hover {
-      background: rgba(139,92,246,.1);
-      box-shadow: 0 0 24px rgba(139,92,246,.2);
-    }
-
-    /* ── Laser lines ── */
-    .laser {
-      position: absolute;
-      height: 1px;
-      pointer-events: none;
-    }
-    .laser-1 {
-      background: linear-gradient(to right, transparent, rgba(139,92,246,.28), transparent);
-      animation: laser-a 6s ease-in-out infinite;
-    }
-    .laser-2 {
-      background: linear-gradient(to left, transparent, rgba(255,45,123,.2), transparent);
-      animation: laser-b 9s ease-in-out infinite;
-      animation-delay: -3s;
-    }
-    .laser-3 {
-      background: linear-gradient(to right, transparent, rgba(255,106,0,.16), transparent);
-      animation: laser-c 11s ease-in-out infinite;
-      animation-delay: -5s;
-    }
-    .laser-4 {
-      background: linear-gradient(to left, transparent, rgba(139,92,246,.14), transparent);
-      animation: laser-d 8s ease-in-out infinite;
-      animation-delay: -1.5s;
-    }
-    @keyframes laser-a {
-      0%, 100% { opacity: .8; transform: rotate(-18deg) scaleX(1);    }
-      50%       { opacity: 1;  transform: rotate(-22deg) scaleX(1.2);  }
-    }
-    @keyframes laser-b {
-      0%, 100% { opacity: .8; transform: rotate(12deg) scaleX(1);   }
-      50%       { opacity: 1;  transform: rotate(8deg)  scaleX(.85); }
-    }
-    @keyframes laser-c {
-      0%, 100% { opacity: .7; transform: rotate(-8deg)  scaleX(1);   }
-      50%       { opacity: 1;  transform: rotate(-12deg) scaleX(1.3); }
-    }
-    @keyframes laser-d {
-      0%, 100% { opacity: .6; transform: rotate(28deg) scaleX(1);   }
-      50%       { opacity: 1;  transform: rotate(23deg) scaleX(.9);  }
-    }
-
-    /* ── Glitch title ── */
-    .glitch { position: relative; display: inline-block; }
-    .glitch::before,
-    .glitch::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      font-family: inherit;
-      font-weight: inherit;
-      font-size: inherit;
-      line-height: inherit;
-      letter-spacing: inherit;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 1.5rem 4rem;
       overflow: hidden;
-      pointer-events: none;
     }
-    .glitch::before {
-      color: #ff2d7b;
-      animation: glitch-a 10s infinite;
-    }
-    .glitch::after {
-      color: #00e5ff;
-      animation: glitch-b 10s infinite;
-    }
-    @keyframes glitch-a {
-      0%, 90%, 100% { clip-path: inset(100% 0 0 0); transform: none; opacity: 0; }
-      91% { clip-path: inset(12% 0 72% 0); transform: translateX(-8px); opacity: .85; }
-      92% { clip-path: inset(58% 0 22% 0); transform: translateX(6px);  opacity: .7;  }
-      93% { clip-path: inset(38% 0 48% 0); transform: translateX(-4px); opacity: .75; }
-      94% { clip-path: inset(78% 0 8%  0); transform: translateX(5px);  opacity: .6;  }
-      95% { clip-path: inset(100% 0 0 0);  transform: none; opacity: 0; }
-    }
-    @keyframes glitch-b {
-      0%, 90%, 100% { clip-path: inset(100% 0 0 0); transform: none; opacity: 0; }
-      91% { clip-path: inset(62% 0 18% 0); transform: translateX(6px);  opacity: .75; }
-      92% { clip-path: inset(22% 0 62% 0); transform: translateX(-5px); opacity: .65; }
-      93% { clip-path: inset(72% 0 12% 0); transform: translateX(4px);  opacity: .7;  }
-      94% { clip-path: inset(42% 0 38% 0); transform: translateX(-6px); opacity: .6;  }
-      95% { clip-path: inset(100% 0 0 0);  transform: none; opacity: 0; }
-    }
-
-    /* ── Custom cursor ── */
-    @media (pointer: fine) { body { cursor: none; } }
-    #cursor {
-      position: fixed;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: #8b5cf6;
-      pointer-events: none;
-      z-index: 9999;
-      left: 0; top: 0;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 12px rgba(139,92,246,.95), 0 0 28px rgba(139,92,246,.4);
-      transition: width .2s, height .2s, background .2s, box-shadow .2s;
-      mix-blend-mode: screen;
-    }
-    #cursor-ring {
-      position: fixed;
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      border: 1px solid rgba(139,92,246,.45);
-      pointer-events: none;
-      z-index: 9998;
-      left: 0; top: 0;
-      transform: translate(-50%, -50%);
-      transition: width .3s, height .3s, border-color .3s;
-    }
-    body.cursor-hover #cursor {
-      width: 14px; height: 14px;
-      background: #ff2d7b;
-      box-shadow: 0 0 16px rgba(255,45,123,.95), 0 0 36px rgba(255,45,123,.35);
-    }
-    body.cursor-hover #cursor-ring {
-      width: 56px; height: 56px;
-      border-color: rgba(255,45,123,.35);
-    }
-
-    /* ── Scanlines ── */
-    #scanlines {
-      position: fixed;
+    .hero__photo {
+      position: absolute;
       inset: 0;
-      pointer-events: none;
-      z-index: 198;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent 0px,
-        transparent 2px,
-        rgba(0,0,0,.022) 2px,
-        rgba(0,0,0,.022) 4px
-      );
+      z-index: -1;
+      background-image: url('assets/hero-mobile.png');
+      background-size: cover;
+      background-position: center 20%;
+      background-repeat: no-repeat;
+      opacity: 0.28;
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+      mix-blend-mode: luminosity;
     }
 
-    /* ── Stronger mix card hover ── */
-    .mix-card:hover {
-      border-color: rgba(139,92,246,.65);
-      box-shadow:
-        0 0 0 1px rgba(139,92,246,.12),
-        0 0 28px rgba(139,92,246,.22),
-        0 0 60px rgba(139,92,246,.08),
-        inset 0 0 40px rgba(139,92,246,.04);
+    .hero__realname {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      color: hsl(var(--fg) / 0.6);
+      margin-bottom: 0.6rem;
+      padding-left: 0.15rem;
+    }
+    .hero__title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(2.5rem, 9vw, 5.5rem);
+      line-height: 1.03;
+      letter-spacing: -0.02em;
+      max-width: 13ch;
+      color: hsl(var(--fg));
+    }
+    .hero__title em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: 1.05em;
+      letter-spacing: 0;
+    }
+    .hero__title .grad {
+      background: linear-gradient(100deg,
+        hsl(var(--violet)) 0%,
+        hsl(var(--magenta)) 30%,
+        #ffffff 50%,
+        hsl(var(--magenta)) 70%,
+        hsl(var(--violet)) 100%);
+      background-size: 220% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: grad-shimmer 6s linear infinite;
+    }
+    @keyframes grad-shimmer {
+      to { background-position: -220% center; }
+    }
+    .hero__sub {
+      margin-top: 1.5rem;
+      max-width: 40ch;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: hsl(var(--fg) / 0.75);
+      text-wrap: balance;
+    }
+
+    /* Hero intro — zachte cascade bij laden */
+    .hero__realname, .hero__title, .hero__sub {
+      opacity: 0;
+      animation: hero-in 950ms cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .hero__realname { animation-delay: 0.15s; }
+    .hero__title    { animation-delay: 0.28s; }
+    .hero__sub      { animation-delay: 0.48s; }
+    @keyframes hero-in {
+      from { opacity: 0; transform: translateY(22px); filter: blur(9px); }
+      to   { opacity: 1; transform: none; filter: blur(0); }
+    }
+    .hero__meta {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+    }
+    .chip {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid hsl(var(--line));
+      border-radius: 999px;
+      color: hsl(var(--muted));
+      background: hsl(var(--card) / 0.5);
+    }
+
+    /* ════════════════════ SHARED ════════════════════ */
+    section { position: relative; padding: 6rem 1.5rem; }
+    .wrap { max-width: 1040px; margin: 0 auto; }
+
+    .sec-head {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid hsl(var(--line));
+    }
+    .sec-head__num {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: 1.85rem;
+      line-height: 1;
+      letter-spacing: 0;
+      background: linear-gradient(120deg, hsl(var(--violet)), hsl(var(--magenta)));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+    .sec-head__title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      letter-spacing: -0.02em;
+    }
+    .sec-head__spacer { flex: 1; }
+    .sec-head__hint {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.16em;
+      color: hsl(var(--muted));
+      display: none;
+    }
+    @media (min-width: 720px) { .sec-head__hint { display: block; } }
+
+    /* ── reveal-on-scroll ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 750ms ease, transform 750ms cubic-bezier(.2,.7,.2,1);
+      transition-delay: var(--reveal-delay, 0ms);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ════════════════════ 01 / SOUND ════════════════════ */
+    .mixes { display: grid; gap: 1.5rem; }
+    .mix {
+      position: relative;
+      border: 1px solid hsl(var(--line));
+      border-radius: 14px;
+      background: hsl(var(--card) / 0.7);
+      padding: 1.25rem;
+      overflow: hidden;
+      transition: border-color 300ms ease, box-shadow 300ms ease, transform 300ms ease;
+    }
+    .mix::before {
+      content: "";
+      position: absolute; inset: 0;
+      border-radius: 14px;
+      padding: 1px;
+      background: linear-gradient(120deg, hsl(var(--violet) / 0.5), hsl(var(--magenta) / 0.5));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 300ms ease;
+    }
+    .mix:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 50px -20px hsl(var(--violet) / 0.5);
+    }
+    .mix:hover::before { opacity: 1; }
+    .mix__head {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .mix__idx {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      color: hsl(var(--magenta));
+    }
+    .mix__title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+    }
+    .mix iframe { display: block; width: 100%; border: 0; border-radius: 6px; }
+    .mix__spacer { flex: 1; }
+    .mix__ext {
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.1em;
+      color: hsl(var(--muted));
+      transition: color 200ms ease;
+    }
+    .mix__ext:hover { color: hsl(var(--magenta)); }
+    .mix__fulllink { justify-self: start; margin-top: 0.25rem; }
+    @media (max-width: 600px) {
+      .mix__ext { display: none; }
+    }
+
+    /* ════════════════════ 02 / ABOUT ════════════════════ */
+    .about__lead {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(1.35rem, 3.6vw, 2rem);
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+      max-width: 24ch;
+    }
+    .about__grid {
+      display: grid;
+      gap: 2.5rem;
+      margin-top: 2.5rem;
+    }
+    @media (min-width: 720px) {
+      .about__grid { grid-template-columns: 1.4fr 1fr; align-items: start; }
+    }
+    .about__body { color: hsl(var(--fg) / 0.8); max-width: 52ch; }
+    .about__body p + p { margin-top: 1.1rem; }
+    .about__genres {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      line-height: 2.2;
+    }
+    .about__genres .k { color: hsl(var(--muted)); display: block; margin-bottom: 0.75rem; }
+    .about__genres .g {
+      display: inline-block;
+      margin: 0 0.5rem 0.5rem 0;
+      padding: 0.2rem 0.6rem;
+      border: 1px solid hsl(var(--line));
+      border-radius: 6px;
+      color: hsl(var(--fg) / 0.85);
+    }
+
+    /* ════════════════════ 03 / CONTACT ════════════════════ */
+    .contact__mail {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(1.6rem, 7vw, 3.5rem);
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, #fff, hsl(var(--magenta)));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+      display: inline-block;
+      word-break: break-word;
+      transition: opacity 200ms ease;
+    }
+    .contact__mail:hover { opacity: 0.75; }
+    .contact__note { color: hsl(var(--muted)); margin-top: 1rem; }
+    .contact__links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      margin-top: 2.5rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      padding: 0.7rem 1.1rem;
+      border: 1px solid hsl(var(--line));
+      border-radius: 999px;
+      color: hsl(var(--fg));
+      transition: border-color 250ms ease, background 250ms ease, color 250ms ease;
+    }
+    .btn:hover {
+      border-color: hsl(var(--magenta) / 0.8);
+      background: hsl(var(--magenta) / 0.1);
+      color: #fff;
+    }
+    .btn .arr { color: hsl(var(--magenta)); }
+    .btn .ico { width: 15px; height: 15px; flex-shrink: 0; }
+
+    .btn--cta {
+      font-weight: 500;
+      background: linear-gradient(120deg, hsl(var(--violet)), hsl(var(--magenta)));
+      color: #fff;
+      border-color: transparent;
+    }
+    .btn--cta:hover {
+      background: linear-gradient(120deg, hsl(var(--violet)), hsl(var(--magenta)));
+      color: #fff;
+      border-color: transparent;
+      filter: brightness(1.08);
+    }
+    .btn--cta .arr { color: #fff; }
+
+    /* ════════════════════ FOOTER ════════════════════ */
+    .footer {
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.1em;
+      color: hsl(var(--muted));
+      padding: 2.5rem 1.5rem;
+      border-top: 1px solid hsl(var(--line));
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    @media (min-width: 720px) {
+      .footer { flex-direction: row; justify-content: space-between; }
+    }
+    .footer__credit .name { color: hsl(var(--magenta)); }
+
+    /* ════════════════════ STICKY WHATSAPP ════════════════════ */
+    .wa-fab {
+      position: fixed;
+      right: 1.25rem;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 1.25rem);
+      z-index: 200;
+      width: 56px; height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, hsl(var(--violet)), hsl(var(--magenta)));
+      color: #fff;
+      box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.55);
+      transition: transform 220ms ease, filter 220ms ease;
+    }
+    .wa-fab:hover { transform: translateY(-2px) scale(1.05); filter: brightness(1.08); }
+    .wa-fab svg { width: 28px; height: 28px; }
+    @media (min-width: 768px) {
+      .wa-fab { right: 1.75rem; bottom: 1.75rem; }
+    }
+
+    /* ════════════════════ REDUCED MOTION ════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .aurora { animation: none; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .hero__realname, .hero__title, .hero__sub {
+        animation: none;
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+      .hero__title .grad { animation: none; }
     }
   </style>
 </head>
 
 <body>
-  <div id="cursor"></div>
-  <div id="cursor-ring"></div>
-  <div id="scanlines"></div>
-  <!-- Now playing pill -->
-  <a id="now-playing" href="https://soundcloud.com/xejlpaulus/chiaroscuro-vol1" target="_blank" rel="noopener">
-    <span class="np-dot"></span>
-    <span class="np-label">NOW PLAYING</span>
-    <span class="np-title">Chiaroscuro | Vol.1</span>
-    <button class="np-close" id="np-close" aria-label="Sluiten">✕</button>
-  </a>
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="grid-overlay" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
 
-  <!-- Grain overlay -->
-  <div id="grain"></div>
-
-  <!-- ══ NAV ══════════════════════════════════════════════════════════════ -->
-  <nav id="navbar">
-    <span style="font-family:'Outfit',sans-serif;font-weight:900;font-size:1.05rem;letter-spacing:.35em;color:#8b5cf6;">XVG</span>
-    <div style="display:flex;gap:2.5rem;">
-      <a href="#about"   class="nav-link">About</a>
-      <a href="#mixes"   class="nav-link">Mixes</a>
-      <a href="#contact" class="nav-link">Contact</a>
+  <!-- ════════ NAV ════════ -->
+  <nav class="nav">
+    <a class="nav__brand" href="#top">Xavaggi</a>
+    <div class="nav__links">
+      <a href="#sound">SOUND</a>
+      <a href="#about">ABOUT</a>
+      <a href="#contact">CONTACT</a>
     </div>
   </nav>
 
-  <!-- ══ HERO ═════════════════════════════════════════════════════════════ -->
-  <section id="hero" style="position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;overflow:hidden;">
-
-    <!-- Mist blobs -->
-    <div class="mist-a" style="width:min(800px,130vw);height:min(800px,130vw);top:50%;left:50%;background:radial-gradient(ellipse,rgba(139,92,246,.2) 0%,rgba(255,45,123,.07) 45%,transparent 70%);filter:blur(70px);"></div>
-    <div class="mist-b" style="width:min(500px,80vw);height:min(500px,80vw);top:20%;left:15%;background:radial-gradient(ellipse,rgba(139,92,246,.12) 0%,transparent 70%);filter:blur(80px);animation-delay:-3s;"></div>
-    <div class="mist-b" style="width:min(350px,60vw);height:min(350px,60vw);bottom:20%;right:12%;background:radial-gradient(ellipse,rgba(255,45,123,.1) 0%,transparent 70%);filter:blur(60px);animation-delay:-1.5s;"></div>
-
-    <!-- Animated laser lines -->
-    <div class="laser laser-1" style="width:55%;left:0;top:50%;transform-origin:left center;"></div>
-    <div class="laser laser-2" style="width:45%;right:0;top:46%;transform-origin:right center;"></div>
-    <div class="laser laser-3" style="width:32%;left:5%;bottom:32%;transform-origin:left center;"></div>
-    <div class="laser laser-4" style="width:22%;right:8%;top:26%;transform-origin:right center;"></div>
-
-    <!-- Content -->
-    <div style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
-      <p style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.55em;color:#8b5cf6;opacity:.75;">— DJ / PRODUCER —</p>
-
-      <h1 class="title-glow glitch" data-text="XAVAGGI" style="font-family:'Outfit',sans-serif;font-weight:900;line-height:.9;letter-spacing:-.025em;color:#d4d0e0;font-size:clamp(4.5rem,20vw,15rem);">
-        XAVAGGI
-      </h1>
-
-      <p style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.25em;color:#d4d0e0;opacity:.45;">
-        voor die echte snuifbazen
+  <!-- ════════ HERO ════════ -->
+  <header class="hero" id="top">
+    <div class="hero__photo" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="hero__realname">Xavier Paulus</p>
+      <h1 class="hero__title">No <em class="grad">introduction</em> needed.</h1>
+      <p class="hero__sub">
+        Sets that move through trance, house, techno and phonk. Hard when it needs
+        to be, melodic when it can be.
       </p>
-
-      <div style="width:56px;height:1px;background:linear-gradient(to right,transparent,#8b5cf6,transparent);"></div>
-
-      <a href="#mixes" class="hero-cta" style="margin-top:.5rem;">Enter the Mix</a>
     </div>
+  </header>
 
-    <!-- Scroll indicator -->
-    <div class="scroll-bob">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.25em;color:#d4d0e0;opacity:.3;">SCROLL</span>
-      <svg width="18" height="28" viewBox="0 0 18 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="1.5" y="1.5" width="15" height="25" rx="7.5" stroke="rgba(212,208,224,.3)" stroke-width="1.5"/>
-        <circle class="scroll-dot" cx="9" cy="9" r="3" fill="#8b5cf6"/>
-      </svg>
-    </div>
-  </section>
-
-  <!-- ══ ABOUT ═════════════════════════════════════════════════════════════ -->
-  <section id="about" style="padding:8rem 1.5rem;max-width:72rem;margin:0 auto;">
-
-    <div class="fade-up" style="display:flex;align-items:center;gap:1rem;margin-bottom:3.5rem;">
-      <span class="sec-num font-mono">01</span>
-      <span class="sec-rule"></span>
-      <h2 class="sec-title">ABOUT</h2>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr;gap:4rem;">
-
-      <div class="fade-up d1" style="max-width:52ch;">
-        <p style="font-size:.82rem;line-height:2.1;color:rgba(212,208,224,.72);margin-bottom:1.25rem;">
-          Xavaggi is een DJ uit het zuiden — opgegroeid tussen de feesten, de velden en het lawaai dat daar vandaan komt. Zijn sets bewegen door trance, house, techno en phonk zonder zich aan één kant vast te pinnen.
-        </p>
-        <p style="font-size:.82rem;line-height:2.1;color:rgba(212,208,224,.72);">
-          Hard als het moet, melodisch als het kan. Op de dancefloor of achter de bar — het maakt niet uit waar, als de muziek maar klopt.
-        </p>
+  <!-- ════════ 01 / SOUND ════════ -->
+  <section id="sound">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-head__num">I</span>
+        <h2 class="sec-head__title">Sound</h2>
+        <span class="sec-head__spacer"></span>
+        <span class="sec-head__hint">LATEST MIXES / SOUNDCLOUD</span>
       </div>
 
-      <div class="fade-up d2">
-        <p style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.25em;color:#8b5cf6;margin-bottom:1rem;">GENRES</p>
-        <div style="display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:3rem;">
-          <span class="pill">TRANCE</span>
-          <span class="pill">TECH HOUSE</span>
-          <span class="pill">TECHNO</span>
-          <span class="pill">PHONK</span>
-          <span class="pill">MELODIC</span>
-          <span class="pill">DEEP HOUSE</span>
-          <span class="pill">PROGRESSIVE</span>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ INSTAGRAM ════════════════════════════════════════════════════════ -->
-  <section id="instagram" style="padding:0 1.5rem 8rem;max-width:72rem;margin:0 auto;">
-
-    <div class="fade-up" style="display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.3em;color:#8b5cf6;opacity:.45;">—</span>
-      <span style="width:36px;height:1px;background:#8b5cf6;flex-shrink:0;"></span>
-      <h2 style="font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(1.5rem,3vw,2.5rem);color:#d4d0e0;letter-spacing:-.02em;">LATEST</h2>
-    </div>
-
-    <div class="fade-up d1" style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;max-width:540px;">
-
-      <!-- Instagram embed card -->
-      <div class="mix-card" style="width:100%;padding:1.25rem;">
-        <blockquote
-          class="instagram-media"
-          data-instgrm-permalink="https://www.instagram.com/p/DW_Hc9jDa7y/"
-          data-instgrm-version="14"
-          style="background:#07060a;border:0;margin:0;max-width:100%;min-width:0;padding:0;width:100%;">
-          <a href="https://www.instagram.com/p/DW_Hc9jDa7y/" target="_blank" rel="noopener"
-             style="font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:#8b5cf6;">
-            Bekijk op Instagram ↗
-          </a>
-        </blockquote>
-      </div>
-
-      <!-- Profile link -->
-      <a href="https://www.instagram.com/xavaggi" target="_blank" rel="noopener"
-         style="display:inline-flex;align-items:center;gap:.6rem;font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.2em;border:1px solid rgba(139,92,246,.3);color:#8b5cf6;padding:.6rem 1.5rem;text-decoration:none;transition:background .3s,box-shadow .3s;"
-         onmouseover="this.style.background='rgba(139,92,246,.08)';this.style.boxShadow='0 0 20px rgba(139,92,246,.18)'"
-         onmouseout="this.style.background='transparent';this.style.boxShadow='none'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="2" width="20" height="20" rx="5"/>
-          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-        </svg>
-        VOLG OP INSTAGRAM
-      </a>
-
-    </div>
-  </section>
-
-  <!-- ══ MIXES ═════════════════════════════════════════════════════════════ -->
-  <section id="mixes" style="padding:8rem 1.5rem;background:linear-gradient(to bottom,transparent,rgba(18,16,26,.6),transparent);">
-    <div style="max-width:72rem;margin:0 auto;">
-
-      <div class="fade-up" style="display:flex;align-items:center;gap:1rem;margin-bottom:3.5rem;">
-        <span class="sec-num font-mono">02</span>
-        <span class="sec-rule"></span>
-        <h2 class="sec-title">MIXES</h2>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:.75rem;max-width:800px;">
-
-        <!-- Bas Birthday Set -->
-        <div class="mix-card fade-up d1">
-          <div class="mix-card-header">
-            <div style="display:flex;align-items:center;gap:.6rem;">
-              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect x="0"  y="8" width="2" height="6" rx="1" fill="#8b5cf6"/>
-                <rect x="3"  y="5" width="2" height="9" rx="1" fill="#8b5cf6"/>
-                <rect x="6"  y="2" width="2" height="12" rx="1" fill="#8b5cf6"/>
-                <rect x="9"  y="4" width="2" height="10" rx="1" fill="#8b5cf6"/>
-                <rect x="12" y="6" width="2" height="8" rx="1" fill="#8b5cf6" opacity=".7"/>
-                <rect x="15" y="9" width="2" height="5" rx="1" fill="#8b5cf6" opacity=".5"/>
-                <rect x="18" y="10" width="2" height="4" rx="1" fill="#8b5cf6" opacity=".35"/>
-              </svg>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.2em;color:#8b5cf6;">SOUNDCLOUD</span>
-            </div>
-            <a href="https://soundcloud.com/xejlpaulus/bas-birthday-set" target="_blank" rel="noopener"
-               style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.15em;color:rgba(212,208,224,.3);text-decoration:none;transition:color .2s;"
-               onmouseover="this.style.color='#8b5cf6'" onmouseout="this.style.color='rgba(212,208,224,.3)'">OPEN ↗</a>
+      <div class="mixes">
+        <div class="mix reveal">
+          <div class="mix__head">
+            <span class="mix__idx">◆</span>
+            <span class="mix__title">Latest mixes</span>
+            <span class="mix__spacer"></span>
+            <a class="mix__ext" href="https://soundcloud.com/xejlpaulus" target="_blank" rel="noopener">OPEN IN SOUNDCLOUD ↗</a>
           </div>
-          <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/xejlpaulus/bas-birthday-set&color=%238b5cf6&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+          <iframe height="166" scrolling="no" frameborder="no" allow="autoplay" loading="lazy"
+            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/users/610053429&color=%23d61f8f&inverse=true&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
         </div>
 
-        <!-- Chiaroscuro Vol. 1 -->
-        <div class="mix-card fade-up d2">
-          <div class="mix-card-header">
-            <div style="display:flex;align-items:center;gap:.6rem;">
-              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect x="0"  y="8" width="2" height="6" rx="1" fill="#ff2d7b"/>
-                <rect x="3"  y="5" width="2" height="9" rx="1" fill="#ff2d7b"/>
-                <rect x="6"  y="2" width="2" height="12" rx="1" fill="#ff2d7b"/>
-                <rect x="9"  y="4" width="2" height="10" rx="1" fill="#ff2d7b"/>
-                <rect x="12" y="6" width="2" height="8" rx="1" fill="#ff2d7b" opacity=".7"/>
-                <rect x="15" y="9" width="2" height="5" rx="1" fill="#ff2d7b" opacity=".5"/>
-                <rect x="18" y="10" width="2" height="4" rx="1" fill="#ff2d7b" opacity=".35"/>
-              </svg>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.2em;color:#ff2d7b;">SOUNDCLOUD</span>
-            </div>
-            <a href="https://soundcloud.com/xejlpaulus/chiaroscuro-vol1" target="_blank" rel="noopener"
-               style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.15em;color:rgba(212,208,224,.3);text-decoration:none;transition:color .2s;"
-               onmouseover="this.style.color='#ff2d7b'" onmouseout="this.style.color='rgba(212,208,224,.3)'">OPEN ↗</a>
-          </div>
-          <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/xejlpaulus/chiaroscuro-vol1&color=%238b5cf6&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-        </div>
-
+        <a class="mix__fulllink btn reveal" href="https://soundcloud.com/xejlpaulus" target="_blank" rel="noopener"><span class="arr">→</span> ALL MIXES ON SOUNDCLOUD</a>
       </div>
     </div>
   </section>
 
-  <!-- ══ CONTACT ═══════════════════════════════════════════════════════════ -->
-  <section id="contact" style="padding:8rem 1.5rem;background:linear-gradient(to bottom,transparent,rgba(18,16,26,.7));">
-    <div style="max-width:72rem;margin:0 auto;">
-
-      <div class="fade-up" style="display:flex;align-items:center;gap:1rem;margin-bottom:3.5rem;">
-        <span class="sec-num font-mono">03</span>
-        <span class="sec-rule"></span>
-        <h2 class="sec-title">CONTACT</h2>
+  <!-- ════════ 02 / ABOUT ════════ -->
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-head__num">II</span>
+        <h2 class="sec-head__title">About</h2>
+        <span class="sec-head__spacer"></span>
+        <span class="sec-head__hint">THE DJ</span>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:5rem;">
+      <p class="about__lead reveal">A <span data-age>25</span>-year-old DJ from Venlo. Raised among the parties, the fields and the noise.</p>
 
-        <div class="fade-up d1">
-          <p style="font-size:.65rem;letter-spacing:.25em;color:#8b5cf6;margin-bottom:.85rem;">BOOKING</p>
-          <a href="mailto:booking@xavaggi.com" class="booking-link">booking@xavaggi.com</a>
-          <p style="font-size:.72rem;line-height:2.1;color:rgba(212,208,224,.38);margin-top:1.5rem;">
-            Voor boekingen, riders &amp; technische specs.<br>
-            Reactie binnen 48 uur.
+      <div class="about__grid">
+        <div class="about__body reveal">
+          <p>
+            It started at friends' parties and never really stopped. Xavaggi doesn't pin
+            himself to one side. Hard when it needs to be, melodic when it can be, the
+            same pull that runs through his Chiaroscuro mix series.
+          </p>
+          <p>
+            Data scientist by day, DJ the rest of the time. On the dancefloor or behind
+            the bar, it doesn't matter where, as long as the music is right.
           </p>
         </div>
-
-        <div class="fade-up d2">
-          <p style="font-size:.65rem;letter-spacing:.25em;color:#8b5cf6;margin-bottom:1.5rem;">VOLG</p>
-          <div style="display:flex;flex-direction:column;gap:1.25rem;">
-
-            <a href="https://www.instagram.com/xavaggi" target="_blank" rel="noopener" class="social-link">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="5"/>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-              </svg>
-              INSTAGRAM
-            </a>
-
-            <a href="https://soundcloud.com/xejlpaulus" target="_blank" rel="noopener" class="social-link">
-              <!-- SoundCloud waveform bars icon -->
-              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="0"  y="8" width="2" height="6" rx="1" fill="currentColor"/>
-                <rect x="3"  y="5" width="2" height="9" rx="1" fill="currentColor"/>
-                <rect x="6"  y="2" width="2" height="12" rx="1" fill="currentColor"/>
-                <rect x="9"  y="4" width="2" height="10" rx="1" fill="currentColor"/>
-                <rect x="12" y="6" width="2" height="8" rx="1" fill="currentColor" opacity=".7"/>
-                <rect x="15" y="9" width="2" height="5" rx="1" fill="currentColor" opacity=".5"/>
-                <rect x="18" y="10" width="2" height="4" rx="1" fill="currentColor" opacity=".35"/>
-              </svg>
-              SOUNDCLOUD
-            </a>
-
-          </div>
+        <div class="about__genres reveal">
+          <span class="k">// GENRES</span>
+          <span class="g">TRANCE</span><span class="g">TECH HOUSE</span><span class="g">TECHNO</span><span class="g">PHONK</span><span class="g">MELODIC</span><span class="g">DEEP HOUSE</span>
         </div>
-
       </div>
-
-      <!-- Footer -->
-      <div style="margin-top:6rem;padding-top:2rem;border-top:1px solid rgba(139,92,246,.1);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem;">
-        <span style="font-family:'Outfit',sans-serif;font-weight:900;font-size:1rem;letter-spacing:.4em;color:#8b5cf6;opacity:.4;">XAVAGGI</span>
-        <p style="font-size:.6rem;letter-spacing:.12em;color:rgba(212,208,224,.22);">© 2024 — ALL RIGHTS RESERVED</p>
-        <p style="font-size:.6rem;letter-spacing:.12em;color:rgba(212,208,224,.22);">NL / BE</p>
-      </div>
-
     </div>
   </section>
 
-  <!-- Instagram embed renderer -->
-  <script async src="https://www.instagram.com/embed.js"></script>
+  <!-- ════════ 03 / CONTACT ════════ -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-head__num">III</span>
+        <h2 class="sec-head__title">Contact</h2>
+        <span class="sec-head__spacer"></span>
+        <span class="sec-head__hint">BOOKINGS</span>
+      </div>
 
-  <!-- ══ JAVASCRIPT ═════════════════════════════════════════════════════ -->
+      <a class="contact__mail reveal" href="mailto:booking@xavaggi.com">booking@xavaggi.com</a>
+      <p class="contact__note reveal">For bookings, riders and technical specs.</p>
+
+      <div class="contact__links reveal">
+        <a class="btn btn--cta" href="mailto:booking@xavaggi.com"><span class="arr">→</span> GET IN TOUCH</a>
+        <a class="btn" href="https://wa.me/31613784972?text=Hey%20Xavaggi%2C%20" target="_blank" rel="noopener">
+          <svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.359.101 11.892c0 2.096.549 4.142 1.595 5.945L0 24l6.335-1.652a11.882 11.882 0 005.71 1.447h.006c6.585 0 11.946-5.359 11.949-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          WHATSAPP
+        </a>
+        <a class="btn" href="https://www.instagram.com/xavaggi" target="_blank" rel="noopener">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17" cy="7" r="1.1" fill="currentColor" stroke="none"/>
+          </svg>
+          INSTAGRAM
+        </a>
+        <a class="btn" href="https://soundcloud.com/xejlpaulus" target="_blank" rel="noopener">
+          <svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M23.999 14.165c-.052 1.796-1.612 3.169-3.4 3.169h-8.18a.68.68 0 0 1-.675-.683V7.862a.747.747 0 0 1 .452-.724s.75-.513 2.333-.513a5.364 5.364 0 0 1 2.763.755 5.433 5.433 0 0 1 2.57 3.54c.282-.08.574-.121.868-.12.884 0 1.73.358 2.347.992s.948 1.49.922 2.373ZM10.721 8.421c.247 2.98.427 5.697 0 8.672a.264.264 0 0 1-.53 0c-.395-2.946-.22-5.718 0-8.672a.264.264 0 0 1 .53 0ZM9.072 9.448c.285 2.659.37 4.986-.006 7.655a.277.277 0 0 1-.55 0c-.331-2.63-.256-5.02 0-7.655a.277.277 0 0 1 .556 0Zm-1.663-.257c.27 2.726.39 5.171 0 7.904a.266.266 0 0 1-.532 0c-.38-2.69-.257-5.21 0-7.904a.266.266 0 0 1 .532 0Zm-1.647.77a26.108 26.108 0 0 1-.008 7.147.272.272 0 0 1-.542 0 27.955 27.955 0 0 1 0-7.147.275.275 0 0 1 .55 0Zm-1.67 1.769c.421 1.865.228 3.5-.029 5.388a.257.257 0 0 1-.514 0c-.21-1.858-.398-3.549 0-5.389a.272.272 0 0 1 .543 0Zm-1.655-.273c.388 1.897.26 3.508-.01 5.412-.026.28-.514.283-.54 0-.244-1.878-.347-3.54-.01-5.412a.283.283 0 0 1 .56 0Zm-1.668.911c.4 1.268.257 2.292-.026 3.572a.257.257 0 0 1-.514 0c-.241-1.262-.354-2.312-.023-3.572a.283.283 0 0 1 .563 0Z"/>
+          </svg>
+          SOUNDCLOUD
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ FOOTER ════════ -->
+  <footer class="footer">
+    <span>XAVAGGI © 2026</span>
+    <span class="footer__credit">MADE BY <span class="name">STAN</span></span>
+  </footer>
+
+  <!-- Sticky WhatsApp -->
+  <a class="wa-fab" href="https://wa.me/31613784972?text=Hey%20Xavaggi%2C%20" target="_blank" rel="noopener" aria-label="WhatsApp Xavaggi">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.359.101 11.892c0 2.096.549 4.142 1.595 5.945L0 24l6.335-1.652a11.882 11.882 0 005.71 1.447h.006c6.585 0 11.946-5.359 11.949-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <!-- ════════ JS / reveal-on-scroll ════════ -->
   <script>
-    // ── Now playing pill ──
-    const pill  = document.getElementById('now-playing');
-    const npX   = document.getElementById('np-close');
-    setTimeout(() => pill.classList.add('visible'), 2000);
-    npX.addEventListener('click', e => {
-      e.preventDefault();
-      e.stopPropagation();
-      pill.style.opacity = '0';
-      pill.style.transform = 'translateY(8px)';
-      setTimeout(() => pill.remove(), 500);
-    });
+    (function () {
+      const els = document.querySelectorAll('.reveal');
 
-    // ── Nav scroll state ──
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 60);
-    }, { passive: true });
-
-    // ── Smooth scroll ──
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', e => {
-        const target = document.querySelector(a.getAttribute('href'));
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+      // Gestaggerde cascade: elementen binnen dezelfde sectie komen na elkaar op
+      document.querySelectorAll('section').forEach(section => {
+        section.querySelectorAll('.reveal').forEach((el, i) => {
+          el.style.setProperty('--reveal-delay', (i * 90) + 'ms');
+        });
       });
-    });
 
-    // ── Custom cursor ──
-    const cursorDot  = document.getElementById('cursor');
-    const cursorRing = document.getElementById('cursor-ring');
-    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-    let rx = mx, ry = my;
-
-    document.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      cursorDot.style.left = mx + 'px';
-      cursorDot.style.top  = my + 'px';
-    }, { passive: true });
-
-    (function tickRing() {
-      rx += (mx - rx) * 0.11;
-      ry += (my - ry) * 0.11;
-      cursorRing.style.left = rx + 'px';
-      cursorRing.style.top  = ry + 'px';
-      requestAnimationFrame(tickRing);
-    })();
-
-    document.querySelectorAll('a, button, .mix-card, .pill').forEach(el => {
-      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-    });
-
-    // ── Scroll reveal ──
-    const revealObserver = new IntersectionObserver(entries => {
-      entries.forEach(({ target, isIntersecting }) => {
-        if (isIntersecting) target.classList.add('visible');
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.fade-up').forEach(el => revealObserver.observe(el));
-
-    // ── About grid: single col on narrow screens ──
-    const aboutGrid = document.querySelector('#about > div > div[style*="grid"]');
-    function updateAboutGrid() {
-      if (aboutGrid) {
-        aboutGrid.style.gridTemplateColumns = window.innerWidth >= 768 ? '1fr 1fr' : '1fr';
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(el => el.classList.add('in'));
+        return;
       }
-    }
-    updateAboutGrid();
-    window.addEventListener('resize', updateAboutGrid, { passive: true });
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+      els.forEach(el => io.observe(el));
+    })();
+  </script>
+
+  <!-- Leeftijd: jaarlijks automatisch bijgewerkt uit geboortejaar -->
+  <script>
+    (function () {
+      const BIRTH_YEAR = 2001; // 25 in 2026, telt elk jaar vanzelf mee
+      const age = new Date().getFullYear() - BIRTH_YEAR;
+      document.querySelectorAll('[data-age]').forEach(el => { el.textContent = String(age); });
+    })();
   </script>
 </body>
 </html>
